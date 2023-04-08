@@ -6,6 +6,7 @@ import object_detection as od
 
 camera=PiCamera()
 camera.resolution=(1920,1080)
+camera.shutter_speed=100
 
 camera.start_preview()
 for i in range(5):

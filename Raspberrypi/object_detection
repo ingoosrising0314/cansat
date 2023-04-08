@@ -84,23 +84,7 @@ def object_detection(modeldir,imagename,threshold=0.5,save=True):
 
     CWD_PATH = os.getcwd()
 
-
-
-    # Define path to images and grab all image filenames
-
-    if IM_DIR:
-
-        PATH_TO_IMAGES = os.path.join(CWD_PATH,IM_DIR)
-
-        images = glob.glob(PATH_TO_IMAGES + '/*.jpg') + glob.glob(PATH_TO_IMAGES + '/*.png') + glob.glob(PATH_TO_IMAGES + '/*.bmp')
-
-        if save_results:
-
-            RESULTS_DIR = IM_DIR + '_results'
-
-
-
-    elif IM_NAME:
+    if IM_NAME:
 
         PATH_TO_IMAGES = os.path.join(CWD_PATH,IM_NAME)
 
