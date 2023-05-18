@@ -2,17 +2,6 @@
 #include "Wire.h"
 #include "I2Cdev.h"
 #include "MPU9250.h"
-#include <SPI.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BMP280.h>
-
-#define SCL 8
-#define SDA 9
-#define CSB 10
-#define SDO 11
-
-Adafruit_BMP280 bmp(CSB,SDA,SDO,SCL);
-
 
 // class default I2C address is 0x68
 // specific I2C addresses may be passed as a parameter here
@@ -57,8 +46,14 @@ float altitude;
 void setup()
 {
     Wire.begin();
-    Serial.begin(9600);
+    Serial.begin(38400);
+    Serial.println("Initializing I2C devices...");
     accelgyro.initialize();
+    Serial.println("Testing device connections...");
+    Serial.println(accelgyro.testConnection() ? "MPU9250 connection successful" : "MPU9250 connection failed");
+
+    delay(1000);
+    Serial.println("     ");
 }
 
 
@@ -72,33 +67,42 @@ void loop()
     getHeading();               
     getTiltHeading();
 
-    Serial.print(Axyz[0]); //Acceleration(g) of X,Y,Z
+    Serial.println("calibration parameter: ");
+    Serial.print(mx_centre);
+    Serial.print("         ");
+    Serial.print(my_centre);
+    Serial.print("         ");
+    Serial.println(mz_centre);
+    Serial.println("     ");
+
+
+    Serial.println("Acceleration(g) of X,Y,Z:");
+    Serial.print(Axyz[0]);
     Serial.print(",");
     Serial.print(Axyz[1]);
     Serial.print(",");
-    Serial.print(Axyz[2]);
-    Serial.print(",");
-    Serial.print(Gxyz[0]); //Gyro(degress/s) of X,Y,Z
+    Serial.println(Axyz[2]);
+    Serial.println("Gyro(degress/s) of X,Y,Z:");
+    Serial.print(Gxyz[0]);
     Serial.print(",");
     Serial.print(Gxyz[1]);
     Serial.print(",");
-    Serial.print(Gxyz[2]);
-    Serial.print(",");
-    Serial.print(Mxyz[0]); //Compass Value of X,Y,Z
+    Serial.println(Gxyz[2]);
+    Serial.println("Compass Value of X,Y,Z:");
+    Serial.print(Mxyz[0]);
     Serial.print(",");
     Serial.print(Mxyz[1]);
     Serial.print(",");
-    Serial.print(Mxyz[2]);
-    Serial.print(",");
-    Serial.print(heading); //The clockwise angle between the magnetic north and X-Axis
-    Serial.print(",");
-    delay(100);    
-    Serial.print(bmp.readTemperature());
-    Serial.print(",");
-    Serial.print(bmp.readPressure());
-    Serial.print(",");
-    Serial.print(bmp.readAltitude(999.2));
+    Serial.println(Mxyz[2]);
+    Serial.println("The clockwise angle between the magnetic north and X-Axis:");
+    Serial.print(heading);
+    Serial.println(" ");
+    Serial.println("The clockwise angle between the magnetic north and the projection of the positive X-Axis in the horizontal plane:");
+    Serial.println(tiltheading);
+    Serial.println("   ");
     Serial.println();
+    delay(1000);
+
 }
 
 void getHeading(void)
@@ -222,3 +226,4 @@ void getCompassDate_calibrated ()
     Mxyz[1] = Mxyz[1] - my_centre;
     Mxyz[2] = Mxyz[2] - mz_centre;
 }
+

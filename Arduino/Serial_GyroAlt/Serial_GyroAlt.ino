@@ -1,4 +1,3 @@
-
 #include "Wire.h"
 #include "I2Cdev.h"
 #include "MPU9250.h"
@@ -53,19 +52,25 @@ float temperature;
 float pressure;
 float atm;
 float altitude;
+bool first=false;
 
-void setup()
-{
-    Wire.begin();
-    Serial.begin(9600);
-    accelgyro.initialize();
+void setup() {
+  Serial.begin(38400);
+  Wire.begin();
+  accelgyro.initialize();
+  if (!bmp.begin()) {
+    Serial.println(F("센서가 인식되지 않습니다. 연결 상태 확인!"));
+    while(1);
+  }
 }
 
 
-
-void loop()
-{
-
+void loop() {
+    float init_press;
+    if (!first) {
+      init_press=bmp.readPressure()/100;
+      first=true;
+    }
     getAccel_Data();
     getGyro_Data();
     getCompassDate_calibrated(); 
@@ -92,12 +97,11 @@ void loop()
     Serial.print(",");
     Serial.print(heading); //The clockwise angle between the magnetic north and X-Axis
     Serial.print(",");
-    delay(100);    
-    Serial.print(bmp.readTemperature());
+    Serial.print(bmp.readTemperature()); // 온도
     Serial.print(",");
-    Serial.print(bmp.readPressure());
+    Serial.print(bmp.readPressure()); // 압력
     Serial.print(",");
-    Serial.print(bmp.readAltitude(999.2));
+    Serial.print(bmp.readAltitude(init_press)); // 고도
     Serial.println();
 }
 
